@@ -16,7 +16,7 @@ struct ChartWithPreferencesApp: App {
                 .environmentObject(defaults)
         }
 
-        WindowGroup("Chart Window") {
+        WindowGroup(id: "chart-window") {
             ChartView(defaults: defaults)
         }
     }

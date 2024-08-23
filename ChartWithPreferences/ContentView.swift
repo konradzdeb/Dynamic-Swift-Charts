@@ -11,13 +11,17 @@ struct ContentView: View {
 
     @StateObject var defaults = Defaults()
     @StateObject var dataGenerator = DataGenerator()
-    @State private var showChartWindow = false
+    @Environment(\.openWindow) var openWindow
 
     var body: some View {
         VStack {
             List {
                 ForEach(0..<defaults.sampleArray.count, id: \.self) { rowIndex in
-                    Text("Entry: \(DataUtilities.dateFromTimestamp(defaults.sampleArray[rowIndex][0]))")
+                    let date = DataUtilities.dateFromTimestamp(defaults.sampleArray[rowIndex][0])
+                    Text("Date: \(DataUtilities.dateFormattedString(from: date)); " +
+                         "Value 1: \(String(format: "%.3f", defaults.sampleArray[rowIndex][1])); " +
+                         "Value 2: \(defaults.sampleArray[rowIndex][2].rounded())"
+                    )
                 }
             }
             HStack {
@@ -31,10 +35,7 @@ struct ContentView: View {
                     defaults.sampleArray.append(contentsOf: dataGenerator.data)
                 }
                 Button("Show chart") {
-                    showChartWindow.toggle()
-                }
-                .sheet(isPresented: $showChartWindow) {
-                    ChartView(defaults: defaults)
+                    openWindow(id: "chart-window")
                 }
                 Button("Clean data") {
                     defaults.sampleArray.removeAll()
